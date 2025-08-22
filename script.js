@@ -44,35 +44,48 @@ class DadJokeEngine {
     async callAI(keywords, jokeType) {
         const prompt = this.buildPrompt(keywords, jokeType);
         
-        const response = await fetch(`${this.baseUrl}/chat/completions`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.apiKey}`
-            },
-            body: JSON.stringify({
-                model: this.model,
-                messages: [
-                    {
-                        role: 'system',
-                        content: '你是一个专业的中文冷笑话创作者，擅长创造有趣、幽默且适合社交分享的笑话。'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                temperature: 0.9,
-                max_tokens: 1000
-            })
-        });
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            
+            const response = await fetch(`${this.baseUrl}/chat/completions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: this.model,
+                    messages: [
+                        {
+                            role: 'system',
+                            content: '你是一个专业的中文冷笑话创作者，擅长创造有趣、幽默且适合社交分享的笑话。'
+                        },
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ],
+                    temperature: 0.9,
+                    max_tokens: 1000
+                }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
 
-        if (!response.ok) {
-            throw new Error(`API请求失败: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`API请求失败: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return this.parseJokes(data.choices[0].message.content);
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new Error('请求超时，请稍后重试');
+            }
+            throw error;
         }
-
-        const data = await response.json();
-        return this.parseJokes(data.choices[0].message.content);
     }
 
     buildPrompt(keywords, jokeType) {
@@ -178,18 +191,34 @@ class DadJokeEngine {
             return;
         }
 
-        navigator.clipboard.writeText(this.selectedJoke).then(() => {
-            alert('笑话已复制到剪贴板！');
-        }).catch(() => {
-            // 降级方案
+        // 兼容性复制方案
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(this.selectedJoke).then(() => {
+                alert('笑话已复制到剪贴板！');
+            }).catch(() => {
+                this.fallbackCopy();
+            });
+        } else {
+            this.fallbackCopy();
+        }
+    }
+
+    fallbackCopy() {
+        try {
             const textArea = document.createElement('textarea');
             textArea.value = this.selectedJoke;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
             document.body.appendChild(textArea);
+            textArea.focus();
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
             alert('笑话已复制到剪贴板！');
-        });
+        } catch (err) {
+            alert('复制失败，请手动复制文本');
+        }
     }
 
     showLoading(show) {

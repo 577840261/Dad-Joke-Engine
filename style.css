@@ -5,10 +5,13 @@
 }
 
 body {
-    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', Arial, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
 }
 
 .container {
@@ -83,10 +86,17 @@ main {
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .generate-btn:hover {
     transform: translateY(-2px);
+}
+
+.generate-btn:active {
+    transform: translateY(0);
 }
 
 .generate-btn:disabled {
@@ -143,7 +153,6 @@ main {
     font-size: 14px;
     color: #666;
 }
-
 .select-btn {
     background: #667eea;
     color: white;
@@ -152,6 +161,14 @@ main {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.select-btn:active {
+    background: #5a6fd8;
 }
 
 .share-section {
@@ -212,7 +229,7 @@ main {
     justify-content: center;
 }
 
-.share-btn {
+.share-buttons .share-btn {
     padding: 12px 24px;
     border: 2px solid #667eea;
     background: white;
@@ -221,11 +238,18 @@ main {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .share-btn:hover {
     background: #667eea;
     color: white;
+}
+
+.share-btn:active {
+    transform: scale(0.98);
 }
 
 .hidden {
