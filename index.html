@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI冷笑话生成器 - Dad Joke Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-laugh-beam"></i> AI冷笑话生成器</h1>
+            <p>让AI帮你成为社交场合的幽默达人</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="keywords">输入关键词（用逗号分隔）</label>
+                    <input type="text" id="keywords" placeholder="例如：程序员,咖啡,周一">
+                </div>
+
+                <div class="form-group">
+                    <label for="jokeType">选择笑话类型</label>
+                    <select id="jokeType">
+                        <option value="谐音梗">谐音梗</option>
+                        <option value="反转">反转</option>
+                        <option value="夸张">夸张</option>
+                        <option value="自嘲">自嘲</option>
+                        <option value="吐槽">吐槽</option>
+                    </select>
+                </div>
+
+                <button id="generateBtn" class="generate-btn">
+                    <i class="fas fa-magic"></i> 生成笑话
+                </button>
+            </div>
+
+            <div class="loading hidden" id="loading">
+                <i class="fas fa-spinner fa-spin"></i> AI正在思考中...
+            </div>
+
+            <div class="results-section hidden" id="resultsSection">
+                <h3>生成的笑话</h3>
+                <div id="jokesList"></div>
+            </div>
+
+            <div class="share-section hidden" id="shareSection">
+                <h3>分享你的笑话</h3>
+                <div class="share-card" id="shareCard">
+                    <div class="card-content">
+                        <div class="joke-text" id="selectedJoke"></div>
+                        <div class="card-footer">
+                            <span class="brand">AI冷笑话生成器</span>
+                            <span class="timestamp" id="timestamp"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="share-buttons">
+                    <button id="downloadBtn" class="share-btn">
+                        <i class="fas fa-download"></i> 下载图片
+                    </button>
+                    <button id="copyBtn" class="share-btn">
+                        <i class="fas fa-copy"></i> 复制文本
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
